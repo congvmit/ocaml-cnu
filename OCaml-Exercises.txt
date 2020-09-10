@@ -1,0 +1,303 @@
+
+OCaml Self Exercises
+
+
+===================================================================================
+Name: Vo Minh Cong
+Student ID: <TODO>
+===================================================================================
+
+Study the following topics in the guided tour
+ - https://dev.realworldocaml.org/guided-tour.html
+
+
+ 1) int float string char 
+
+ 2) let binding
+
+ 3) functions and type inference
+
+ 4) inferring generic types
+
+ 5) tuples, lists, options, and pattern matching
+
+ 6) recursive (list) functions
+
+   - let rec
+
+ 7) recrods and variants
+
+ 8) arrays
+
+ 9) refs
+
+You may refer to 
+
+ - Chapter 26 The standard library
+     https://caml.inria.fr/pub/docs/manual-ocaml/index.html
+
+===================================================================================
+
+Exercises
+
+(List-1) last : 'a list -> 'a option
+
+  - last [1;2;3] ==> Some 3
+  - last ['1';'2';'3'] ==> Some '3'
+  - last [] ==> None
+
+  (Do not use the list library.)
+
+[SOLUTION]
+
+let rec tail: ('a list -> 'a option) =
+  fun lst ->
+    match lst with
+    | [] -> None
+    | [a] -> Some a
+    | hd :: tl -> tail tl
+  ;;
+
+
+(List-2) length : 'a list -> int
+
+  - length [1;2;3] ==> 3
+  - length [] ==> 0
+
+  (Do not use the list library.)
+
+[SOLUTION]
+
+let rec length: ('a list -> int) = 
+  fun lst ->
+    match lst with
+    | [] -> 0
+    | hd :: tl -> 1 + length tl
+;;
+
+
+(List-3) is_palindrome : 'a list -> bool
+
+  - is_palindrome ['x'; 'a'; 'm'; 'a'; 'x'] ==> true
+  - is_palindrome ['c'; 'h'; 'o'; 'i'] ==> false
+  - is_palindrome [] ==> true
+
+[SOLUTION]
+
+let rev list =
+  let rec aux acc lst = 
+    match  lst with
+    | [] -> acc
+    | h::t -> aux (h::acc) t in
+  aux [] list
+  ;;
+  
+let is_palindrome lst = 
+  if lst = rev lst then true else false
+  ;;
+
+
+(List-4) flatten : 'a node -> 'a list
+
+    type 'a node =
+    | One of 'a
+    | Many of 'a node list
+
+  - flatten [One 'a'; Many [One 'b'; Many [One 'c'; One 'd']; One 'e']]
+    ==> ['a'; 'b'; 'c'; 'd'; 'e']
+
+[SOLUTION]
+
+(* Reverse a list *)
+let rev list =
+  let rec aux acc lst = 
+    match  lst with
+    | [] -> acc
+    | h::t -> aux (h::acc) t in
+  aux [] list
+  ;;
+  
+type 'a node =
+  | One of 'a
+  | Many of 'a node list
+  ;;
+
+let flatten list =
+  let rec aux default lst = 
+    match lst with
+    | [] -> default
+    | One x :: t -> aux (x :: default) t
+    | Many l :: t -> aux (aux default l) t 
+  in
+  rev (aux [] list)
+;;
+
+
+(List-5) run_length : 'a list -> (int * 'a) list
+
+  - run_length ['a'; 'a'; 'a'; 'b'; 'b'; 'c'; 'c'; 'c'; 'c']
+    ==> [(3, 'a'); (2, 'b'); (4, 'c')]
+ 
+    i.e., three 'a', two 'b', and four 'c' !!!
+
+[SOLUTION]
+
+let run_length : 'a list -> (int * 'a) list = fun lst ->
+  let rec count n lst = 
+    match lst with
+      | [] -> []
+      | [a] ->[(n, a)]
+      | h1::h2::t -> 
+          if h1 = h2 then count (n + 1) (h2::t)
+          else (n, h1) :: count 1 (h2::t)
+  in
+  count 1 lst
+;;
+
+
+===================================================================================
+
+(Num-1) newton_square 2. ==> 1.414...
+
+   - Python code:
+
+def sqrt(n):
+    x = n
+    y = (x+1)/2
+    while y < x:
+        x = y
+        y = (x+n/x)/2
+    return x
+
+   - newton_square : float -> float
+   
+   - write a recursive function in OCaml!
+
+[SOLUTION]
+
+let sqrt : float -> float = fun n ->
+  let x = n in
+  let y = (x +. 1.)/. 2. in
+  let rec aggregate : float -> float -> float -> float = fun x y n ->
+    let x = y in
+    let y = (x +. (n/.x)) /. 2. in
+    if y < x then aggregate x y n
+    else x
+  in
+  aggregate x y n
+;;
+
+
+
+(Num-2) all_primes : int -> int -> int list
+
+  - all_primes 2 20 ==> [2;3;5;7;11;13;17;19]
+
+[SOLUTION]
+
+
+let rec is_prime : int -> int -> bool = fun cur num ->
+  let float_cur = float_of_int cur in
+  let float_num = float_of_int num in
+  if float_cur < sqrt(float_num) || float_cur = sqrt(float_num) then
+    (if num mod cur == 0 then false
+    else is_prime (cur + 1) num)      
+  else true
+;;
+
+let rec all_primes : int -> int -> int list = fun st ed ->
+  if st > ed then []
+  else if st = ed then 
+    ( if (is_prime 2 st) then [st]
+      else []
+    )
+  else
+    begin
+      if (is_prime 2 st) then 
+        st :: (all_prime (st+1) ed)
+      else 
+      (all_prime (st+1) ed)
+    end
+  ;;
+
+
+===================================================================================
+
+(Logic-1) evaluate : (string * bool) list -> bool_expr -> bool
+
+  - type bool_expr =
+      |  Var of string
+      |  Not of bool_expr
+      |  And of bool_expr * bool_expr
+      |  Or  of bool_expr * bool_expr
+
+  - evaluate
+      [("a",true); ("b",false)]
+      (And (Or (Var "a", Var "b"), And (Var "a", Var "b")))
+    ==> false
+
+[SOLUTION]
+
+
+
+
+===================================================================================
+
+(BinTree-1) max : 'a binary_tree -> 'a
+  - type 'a binary_tree =
+      | Empty
+      | Node of 'a * 'a binary_tree * 'a binary_tree
+
+
+  - Node 'a'
+     (Node 'b' (Node 'd' Empty Empty) (Node 'e' Empty Empty))
+     (Node 'c' (Node 'c' Empty (Node 'f' (Node 'g' Empty Empty) Empty)))
+
+  - max ( ... ) ==> 'g'
+
+[SOLUTION]
+
+
+
+
+
+(BinTree-2) sum : int binary_tree -> int
+
+  - sum (Node 1 (Node 2 Empty Empty) (Node 3 Empty (Node 4 Empty Empty)))
+    ==> 10
+
+[SOLUTION]
+
+
+
+
+
+(BinTree-3) tostr : string binary_tree -> string
+
+  - tostr Empty ==> ""
+  - tostr (Node "a" Empty Empty) ==> "a"
+  - tostr (Node "a" Empty (Node b Empty Empty)) ==> "a(,b)"
+  - tostr (Node "a" (Node "b" Empty Empty) (Node "c" Empty (Node "d" Empty Empty)))
+    ==> "a(b,c(,d))"
+
+[SOLUTION]
+
+
+
+
+
+===================================================================================
+
+
+[Submission guideline]
+
+ - Submit this text file including your solutions for the exercises. 
+
+ - Do not change the form. You are only allowed to add as many lines
+   as your solution needs.
+
+ - The file name should be in the form of 
+
+     Ocaml-Exercise-[Student ID]_[Name].txt
+
+===================================================================================
