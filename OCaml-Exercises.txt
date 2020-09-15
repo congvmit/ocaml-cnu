@@ -239,6 +239,34 @@ let rec all_primes : int -> int -> int list = fun st ed ->
 [SOLUTION]
 
 
+type bool_expr =
+  |  Var of string
+  |  Not of bool_expr
+  |  And of bool_expr * bool_expr
+  |  Or  of bool_expr * bool_expr
+  ;;
+
+let rec var_to_bool : (string * bool) list -> string -> bool = fun definitions query_value ->
+  match definitions with
+  | [] -> false (* Return false if the definition tuple is empty *)
+  | head :: tails -> 
+      match head with 
+      | (def_key, def_val) -> if def_key = query_value then def_val else (var_to_bool tails query_value)
+  ;;
+
+let rec ops_mapping : (string * bool) list -> bool_expr ->  bool = fun definitions bool_expr ->
+  match bool_expr with
+  | Var value -> var_to_bool definitions value
+  | Not be -> not (ops_mapping definitions be)
+  | And (be1, be2) ->  (ops_mapping definitions be1) && (ops_mapping definitions be2)
+  | Or (be1, be2) -> (ops_mapping definitions be1) || (ops_mapping definitions be2)
+;;
+
+let evaluate : (string * bool) list -> bool_expr -> bool = fun definitions bool_expr ->
+  ops_mapping definitions bool_expr  
+  ;;
+
+
 
 
 ===================================================================================

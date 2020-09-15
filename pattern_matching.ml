@@ -315,6 +315,8 @@ let sqrt : float -> float = fun n ->
 ;;
 
 
+(* (Num-2) all_primes : int -> int -> int list *)
+
 let rec is_prime : int -> int -> bool = fun cur num ->
   let float_cur = float_of_int cur in
   let float_num = float_of_int num in
@@ -341,3 +343,71 @@ let rec all_prime : int -> int -> int list = fun st ed ->
 
 all_prime 2 20;;
 all_prime 10 50;;
+
+
+(* (Logic-1) evaluate : (string * bool) list -> bool_expr -> bool *)
+
+type bool_expr =
+  |  Var of string
+  |  Not of bool_expr
+  |  And of bool_expr * bool_expr
+  |  Or  of bool_expr * bool_expr
+;;
+
+
+(* 
+let func_mapping: bool_expr ->  =
+  match val with
+  | And -> true *)
+
+(* let convert_to_record : (string * bool) list -> 'a  *)
+
+(* let evaluate : (string * bool) list -> bool_expr -> bool = fun lst_bool_expr bool_expr ->
+  match lst_bool_expr with
+  | [] -> []
+
+  (* Dummy Mapping *)
+  | Var str -> true
+  | Not b_ex -> true
+  | And b_ex1, b_ex2 -> true
+  | Or b_ex1, b_ex2 -> true
+;;
+ *)
+
+
+
+type bool_expr =
+  |  Var of string
+  |  Not of bool_expr
+  |  And of bool_expr * bool_expr
+  |  Or  of bool_expr * bool_expr
+  ;;
+
+let rec var_to_bool : (string * bool) list -> string -> bool = fun definitions query_value ->
+  match definitions with
+  | [] -> false (* Return false if the definition tuple is empty *)
+  | head :: tails -> 
+      match head with 
+      | (def_key, def_val) -> if def_key = query_value then def_val else (var_to_bool tails query_value)
+  ;;
+
+let rec ops_mapping : (string * bool) list -> bool_expr ->  bool = fun definitions bool_expr ->
+  match bool_expr with
+  | Var value -> var_to_bool definitions value
+  | Not be -> not (ops_mapping definitions be)
+  | And (be1, be2) ->  (ops_mapping definitions be1) && (ops_mapping definitions be2)
+  | Or (be1, be2) -> (ops_mapping definitions be1) || (ops_mapping definitions be2)
+;;
+
+let evaluate : (string * bool) list -> bool_expr -> bool = fun definitions bool_expr ->
+  ops_mapping definitions bool_expr  
+  ;;
+
+
+(* Test *)
+
+
+evaluate [("a",true); ("b",false)] (And (Or (Var "a", Var "b"), And (Var "a", Var "b")));;\
+evaluate [("a",true); ("b",true)] (And (Or (Var "a", Var "b"), And (Var "a", Var "b")));;
+
+var_to_bool [("a",true); ("b",false)] "a";;
