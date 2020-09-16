@@ -412,6 +412,7 @@ evaluate [("a",true); ("b",true)] (And (Or (Var "a", Var "b"), And (Var "a", Var
 
 var_to_bool [("a",true); ("b",false)] "a";;
 
+<<<<<<< HEAD
 
 
 (* =========================================================== *)
@@ -464,3 +465,6 @@ tostr Empty;;
 tostr (Node ("a", Empty, Empty));;
 tostr (Node ("a", Empty, (Node ("b", Empty, Empty))));;
 tostr (Node ("a", Node ("b", Empty, Empty), Node ("c", Empty, (Node ("d", Empty, Empty)))))
+=======
+https://github.com/congvm-it/ocaml-cnu.git
+>>>>>>> ab1d91cbe8828bb884db3eb8422a81355770370c
