@@ -4,7 +4,7 @@ OCaml Self Exercises
 
 ===================================================================================
 Name: Vo Minh Cong
-Student ID: <TODO>
+Student ID: 207818
 ===================================================================================
 
 Study the following topics in the guided tour
@@ -296,8 +296,16 @@ let evaluate : (string * bool) list -> bool_expr -> bool = fun definitions bool_
 
 [SOLUTION]
 
+type 'a binary_tree =
+  | Empty
+  | Node of 'a * 'a binary_tree * 'a binary_tree
+;;
 
-
+let rec sum : int binary_tree -> int = fun tree ->
+  match tree with
+  | Empty -> 0 
+  | Node (value, lnode, rnode) -> value + sum lnode + sum rnode
+  ;;
 
 
 (BinTree-3) tostr : string binary_tree -> string
@@ -310,6 +318,18 @@ let evaluate : (string * bool) list -> bool_expr -> bool = fun definitions bool_
 
 [SOLUTION]
 
+
+type 'a binary_tree =
+  | Empty
+  | Node of 'a * 'a binary_tree * 'a binary_tree
+;;
+
+let rec tostr : string binary_tree -> string = fun tree ->
+  match tree with 
+  | Empty -> ""
+  | Node  (value, Empty, Empty) -> value 
+  | Node (value, lnode, rnode) -> value ^ "(" ^ tostr (lnode) ^ "," ^ tostr (rnode) ^ ")"
+  ;;
 
 
 

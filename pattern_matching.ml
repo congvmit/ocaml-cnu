@@ -411,3 +411,56 @@ evaluate [("a",true); ("b",false)] (And (Or (Var "a", Var "b"), And (Var "a", Va
 evaluate [("a",true); ("b",true)] (And (Or (Var "a", Var "b"), And (Var "a", Var "b")));;
 
 var_to_bool [("a",true); ("b",false)] "a";;
+
+
+
+(* =========================================================== *)
+type 'a binary_tree =
+  | Empty
+  | Node of 'a * 'a binary_tree * 'a binary_tree
+;;
+
+
+let rec traverse : 'a binary_tree -> int -> 'a -> 'a = fun tree depth node_val->
+  match tree with
+  | Empty -> 0 
+  | Node (value, lnode, rnode) -> value + sum lnode + sum rnode
+;;
+
+
+let rec max : 'a binary_tree -> 'a = fun tree ->
+  match tree with
+  | Empty -> 0 
+  | Node (value, lnode, rnode) -> value + sum lnode + sum rnode
+  ;;
+
+
+(* ----------------- *)
+let rec sum : int binary_tree -> int = fun tree ->
+  match tree with
+  | Empty -> 0 
+  | Node (value, lnode, rnode) -> value + sum lnode + sum rnode
+  ;;
+
+
+
+sum (Node (1, Node (6, Empty, Empty), 
+    Node (3, 
+          Empty, 
+          Node (4, Empty, Empty)))
+);;
+
+
+(* (BinTree-3) tostr : string binary_tree -> string *)
+
+let rec tostr : string binary_tree -> string = fun tree ->
+  match tree with 
+  | Empty -> ""
+  | Node  (value, Empty, Empty) -> value 
+  | Node (value, lnode, rnode) -> value ^ "(" ^ tostr (lnode) ^ "," ^ tostr (rnode) ^ ")"
+  ;;
+
+tostr Empty;;
+tostr (Node ("a", Empty, Empty));;
+tostr (Node ("a", Empty, (Node ("b", Empty, Empty))));;
+tostr (Node ("a", Node ("b", Empty, Empty), Node ("c", Empty, (Node ("d", Empty, Empty)))))
