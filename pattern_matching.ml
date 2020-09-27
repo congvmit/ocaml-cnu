@@ -301,6 +301,8 @@ let run_length : 'a list -> (int * 'a) list = fun lst ->
   count 1 lst
 ;;
 
+run_length ['a'; 'a'; 'b';'a'; 'b'; 'b'; 'c'; 'c'; 'c'; 'c'];;
+
 
 let sqrt : float -> float = fun n ->
   let x = n in
@@ -410,9 +412,9 @@ let evaluate : (string * bool) list -> bool_expr -> bool = fun definitions bool_
 evaluate [("a",true); ("b",false)] (And (Or (Var "a", Var "b"), And (Var "a", Var "b")));;\
 evaluate [("a",true); ("b",true)] (And (Or (Var "a", Var "b"), And (Var "a", Var "b")));;
 
-var_to_bool [("a",true); ("b",false)] "a";;
-
-<<<<<<< HEAD
+var_to_bool [("a",true); ("b",false)] "a";; 
+(* -> true *)
+var_to_bool [("a",true); ("b",false)] "b";;
 
 
 (* =========================================================== *)
@@ -422,12 +424,63 @@ type 'a binary_tree =
 ;;
 
 
-let rec traverse : 'a binary_tree -> int -> 'a -> 'a = fun tree depth node_val->
+
+let rec left_leaves tree =
   match tree with
-  | Empty -> 0 
-  | Node (value, lnode, rnode) -> value + sum lnode + sum rnode
+  | Node (l, k, r, wsk) -> (
+    match l with
+    | Node (ll, lk, lr, lwsk) -> 
+      left_leaves l; 
+      if ll = Empty then wsk := l else wsk := !lwsk; 
+      left_leaves r;
+    | Empty -> wsk := Empty
+    )
+  | Empty -> ();;
+
+  
+let rec traversing : 'a binary_tree -> int -> int ref -> string ref -> string = fun tree level max_level ref res ref ->
+  match tree with 
+  | Empty -> res
+  | Node (value, lnode, rnode) -> 
+    
+      let level = level + 1 in
+      traversing lnode level max_level res; 
+      if level > max_level 
+      then 
+      (
+          max_level := level;
+          res := value 
+      )
+      traversing rnode level max_level res
 ;;
 
+(* | Node (value, Empty, Empty) ->  *)
+let rec max : 'a binary_tree -> string = fun tree ->
+  let rec traversing : 'a binary_tree -> int -> int -> string = fun tree level max_level res ->
+    let level = level + 1 in
+    match tree with 
+    (* | Empty -> res *)
+    | Node (value, lnode, rnode) -> 
+      begin
+        traversing (lnode level max_level res); 
+        if level > max_level 
+        then 
+          begin 
+            max_level = level;
+            res = value
+          end
+        ;
+        traversing (rnode level max_level res)
+      end
+  in
+;;
+
+
+(* let rec traverse : string -> 'a binary_tree -> int -> (int * string) list = fun prev_node_val tree depth ->
+  match tree with
+  | Empty -> (depth, )
+  | Node (value, lnode, rnode) -> traverse (value lnode depth) :: traverse (value rnode depth)
+;;
 
 let rec max : 'a binary_tree -> 'a = fun tree ->
   match tree with
@@ -437,11 +490,11 @@ let rec max : 'a binary_tree -> 'a = fun tree ->
 
 
 (* ----------------- *)
-let rec sum : int binary_tree -> int = fun tree ->
+(* let rec sum : int binary_tree -> int = fun tree ->
   match tree with
   | Empty -> 0 
   | Node (value, lnode, rnode) -> value + sum lnode + sum rnode
-  ;;
+  ;; *) *)
 
 
 
@@ -450,6 +503,29 @@ sum (Node (1, Node (6, Empty, Empty),
           Empty, 
           Node (4, Empty, Empty)))
 );;
+
+type 'a binary_tree =
+  | Empty
+  | Node of 'a * 'a binary_tree * 'a binary_tree
+;;
+
+type tree = 
+  | Node of int * tree * tree
+  | Empty
+;;
+
+
+let rec left_leaves tree =
+  match tree with
+  | Node (l, k, r, wsk) -> (
+    match l with
+    | Node (ll, lk, lr, lwsk) -> 
+      left_leaves l; 
+      if ll = Empty then wsk := l else wsk := !lwsk; 
+      left_leaves r;
+    | Empty -> wsk := Empty
+    )
+  | Empty -> ();;
 
 
 (* (BinTree-3) tostr : string binary_tree -> string *)
@@ -465,6 +541,58 @@ tostr Empty;;
 tostr (Node ("a", Empty, Empty));;
 tostr (Node ("a", Empty, (Node ("b", Empty, Empty))));;
 tostr (Node ("a", Node ("b", Empty, Empty), Node ("c", Empty, (Node ("d", Empty, Empty)))))
-=======
-https://github.com/congvm-it/ocaml-cnu.git
->>>>>>> ab1d91cbe8828bb884db3eb8422a81355770370c
+
+
+
+(* =============================================================== *)
+
+(* Review SQRT *)
+let sqrt : float -> float = fun n ->
+  let x = n in
+  let y = (x +. 1.)/. 2. in
+  let rec aggregate : float -> float -> float -> float = fun x y n ->
+    let x = y in
+    let y = (x +. (n/.x)) /. 2. in
+    (* if y < x then aggregate x y n  *)
+    if x -. y > 10e-9 then aggregate x y n
+    else x
+  in
+  aggregate x y n
+;;
+
+
+(* Review run_length *)
+let rec sort : 'a list -> 'a list = fun lst -> 
+  let rec insert elt lst =
+    match lst with
+    | [] -> [elt]
+    | head :: tail -> if elt <= head then elt :: lst else head :: insert elt tail
+  in
+  match lst with 
+  | [] -> []
+  | head :: tail -> insert head (sort tail)
+;;
+
+
+let run_length : 'a list -> (int * 'a) list = fun lst ->
+  let rec count n lst = 
+    match lst with
+      | [] -> []
+      | [a] ->[(n, a)]
+      | h1::h2::t -> 
+          if h1 = h2 then count (n + 1) (h2::t)
+          else (n, h1) :: count 1 (h2::t)
+  in
+
+  let sorted_lst = sort lst in
+  count 1 sorted_lst
+;;
+
+
+sort [44;1;3;4];;
+sort ["a";"b";"a";"b"];;
+run_length ['a'; 'a'; 'b';'a'; 'b'; 'b'; 'c'; 'c'; 'c'; 'c'];;
+
+
+
+

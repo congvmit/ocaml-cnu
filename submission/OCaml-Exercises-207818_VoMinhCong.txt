@@ -50,12 +50,13 @@ Exercises
 
 [SOLUTION]
 
+
 let rec last: ('a list -> 'a option) =
   fun lst ->
     match lst with
     | [] -> None
     | [a] -> Some a
-    | hd :: tl -> tail tl
+    | hd :: tl -> last tl
   ;;
 
 
@@ -108,6 +109,7 @@ let is_palindrome lst =
 
 [SOLUTION]
 
+
 (* Reverse a list *)
 let rev list =
   let rec aux acc lst = 
@@ -142,6 +144,19 @@ let flatten list =
 
 [SOLUTION]
 
+
+let rec sort : 'a list -> 'a list = fun lst -> 
+  let rec insert elt lst =
+    match lst with
+    | [] -> [elt]
+    | head :: tail -> if elt <= head then elt :: lst else head :: insert elt tail
+  in
+  match lst with 
+  | [] -> []
+  | head :: tail -> insert head (sort tail)
+;;
+
+
 let run_length : 'a list -> (int * 'a) list = fun lst ->
   let rec count n lst = 
     match lst with
@@ -151,7 +166,9 @@ let run_length : 'a list -> (int * 'a) list = fun lst ->
           if h1 = h2 then count (n + 1) (h2::t)
           else (n, h1) :: count 1 (h2::t)
   in
-  count 1 lst
+
+  let sorted_lst = sort lst in
+  count 1 sorted_lst
 ;;
 
 
@@ -161,19 +178,26 @@ let run_length : 'a list -> (int * 'a) list = fun lst ->
 
    - Python code:
 
-def sqrt(n):
+   def sqrt(n):
+
     x = n
+
     y = (x+1)/2
+
     while y < x:
+
         x = y
+
         y = (x+n/x)/2
+
     return x
 
    - newton_square : float -> float
    
    - write a recursive function in OCaml!
-
+   
 [SOLUTION]
+
 
 let sqrt : float -> float = fun n ->
   let x = n in
@@ -187,6 +211,7 @@ let sqrt : float -> float = fun n ->
   in
   aggregate x y n
 ;;
+
 
 
 (Num-2) all_primes : int -> int -> int list
@@ -219,6 +244,7 @@ let rec all_primes : int -> int -> int list = fun st ed ->
       (all_primes (st+1) ed)
     end
   ;;
+
 
 
 ===================================================================================
@@ -268,6 +294,8 @@ let evaluate : (string * bool) list -> bool_expr -> bool = fun definitions bool_
 
 
 
+
+
 ===================================================================================
 
 (BinTree-1) max : 'a binary_tree -> 'a
@@ -295,6 +323,7 @@ let evaluate : (string * bool) list -> bool_expr -> bool = fun definitions bool_
 
 [SOLUTION]
 
+
 type 'a binary_tree =
   | Empty
   | Node of 'a * 'a binary_tree * 'a binary_tree
@@ -305,6 +334,7 @@ let rec sum : int binary_tree -> int = fun tree ->
   | Empty -> 0 
   | Node (value, lnode, rnode) -> value + sum lnode + sum rnode
   ;;
+
 
 
 (BinTree-3) tostr : string binary_tree -> string
