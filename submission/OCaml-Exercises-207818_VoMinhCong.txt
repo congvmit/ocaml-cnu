@@ -294,8 +294,6 @@ let evaluate : (string * bool) list -> bool_expr -> bool = fun definitions bool_
 
 
 
-
-
 ===================================================================================
 
 (BinTree-1) max : 'a binary_tree -> 'a
@@ -312,7 +310,27 @@ let evaluate : (string * bool) list -> bool_expr -> bool = fun definitions bool_
 
 [SOLUTION]
 
+type 'a binary_tree =
+  | Empty
+  | Node of 'a * 'a binary_tree * 'a binary_tree
+;;
 
+
+let rec traversing : 'a binary_tree -> 'a -> 'a = fun tree deepest_value ->
+    match tree with
+    | Empty -> deepest_value
+    | Node (value, lnode, rnode) ->
+      let curr_deepest_value = if value > deepest_value then value else deepest_value in
+      let deepest_left_value = traversing lnode curr_deepest_value in
+      let deepest_right_value = traversing rnode curr_deepest_value in
+      if deepest_left_value > deepest_right_value then deepest_left_value else deepest_right_value
+;;
+
+let max : 'a binary_tree -> 'a = fun tree ->
+  match tree with
+  | Empty -> failwith "Empty Tree"
+  | Node (value, lnode, rnode) -> traversing tree value
+;;
 
 
 

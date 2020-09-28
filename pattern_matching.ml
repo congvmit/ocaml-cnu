@@ -509,24 +509,31 @@ type 'a binary_tree =
   | Node of 'a * 'a binary_tree * 'a binary_tree
 ;;
 
-type tree = 
-  | Node of int * tree * tree
-  | Empty
+let max : 'a binary_tree -> 'a = fun tree ->
+  let rec traversing : 'a binary_tree -> 'a -> 'a = fun tree deepest_value ->
+    match tree with
+    | Empty -> deepest_value
+    | Node (value, lnode, rnode) ->
+      let curr_deepest_value = if value > deepest_value then value else deepest_value in
+      let deepest_left_value = traversing lnode curr_deepest_value in
+      let deepest_right_value = traversing rnode curr_deepest_value in
+      if deepest_left_value > deepest_right_value then deepest_left_value else deepest_right_value
+  in 
+  match tree with
+  | Empty -> failwith "Empty Tree"
+  | Node (value, lnode, rnode) -> traversing tree value
 ;;
 
 
-let rec left_leaves tree =
-  match tree with
-  | Node (l, k, r, wsk) -> (
-    match l with
-    | Node (ll, lk, lr, lwsk) -> 
-      left_leaves l; 
-      if ll = Empty then wsk := l else wsk := !lwsk; 
-      left_leaves r;
-    | Empty -> wsk := Empty
-    )
-  | Empty -> ();;
+max (Node ('a',
+    (Node ('b', (Node ('d', Empty, Empty)), (Node ('e', Empty, Empty)))),
+    (Node ('c', Empty, (Node ('f', (Node ('g', Empty, Empty)), Empty))))))
+;;
 
+
+max (Node ('a',
+    (Node ('b', (Node ('d', Empty, Empty)), (Node ('e', Empty, Empty)))), Empty))
+;;
 
 (* (BinTree-3) tostr : string binary_tree -> string *)
 
@@ -592,6 +599,8 @@ let run_length : 'a list -> (int * 'a) list = fun lst ->
 sort [44;1;3;4];;
 sort ["a";"b";"a";"b"];;
 run_length ['a'; 'a'; 'b';'a'; 'b'; 'b'; 'c'; 'c'; 'c'; 'c'];;
+
+
 
 
 
