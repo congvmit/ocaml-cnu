@@ -218,13 +218,13 @@ Base case: 1)  ————————— (T-Zero)
                 false: Bool
 
 Base-1: 
-  t = true and T = Bool. The argument holds because true is a value
+  t = true and T = Bool. The property holds because true is a value, so t is value
 
 Base-2:
-  t = false and T = Bool. The argument holds because true is a value
+  t = false and T = Bool. The property holds because true is a value, so t is value
 
 Base-3:
-  t = 0 and T = Nat. The argument holds because 0 is a value
+  t = 0 and T = Nat. The property holds because 0 is a value, so t is value
 
 Inductive case:
 
@@ -258,7 +258,7 @@ We have 4 cases to examine:
             ——————–  
             t1: Nat
     4)  ———————————————–——
-          iszero t1 : Nat
+          iszero t1 : Bool
 
 Consider case 1) t = if t1 then t2 else t3
                  if t1 is a value, then if t1 then t2 else t3 is also a value (By E-IFTrue pr E-IFFalse)
@@ -309,3 +309,78 @@ Consider case 4) t = iszero t1, t1 : Nat
  - Prove it by induction on typing derivations. 
 
    [SOLUTION]
+                                                                                ▽
+We can proof the lemma by induction on the structure of typing derivations   ——————–       
+                                                                              t: T
+
+Base case: 1)  ————————— (T-Zero)
+                0: Nat 
+
+           2)  ———————————— (T-True)
+                true: Bool
+
+           3)  ————————————— (T-False)
+                false: Bool
+
+    Base-1: 
+      t = true and T = Bool. The property holds because 0 is a value, so there is relation such that t -> t'
+
+    Base-2:
+      t = false and T = Bool. The property holds because 0 is a value, so there is relation such that t -> t'
+
+    Base-3:
+      t = 0 and T = Nat. The property holds because 0 is a value, so there is relation such that t -> t'
+
+
+Inductive case: 
+
+
+We have 4 cases to examine:
+              ▽                 ▽             ▽
+         ————–——————       ————–——————   ————–——————
+          t1 : Bool          t2 : T         t3 : T
+    1) ———————————————–————————————————————————————–——
+            if t1 then t2 else t3 : T
+
+               ▽ 
+            ——————–  
+            t1: Nat
+    2)  ———————————————–——
+          succ t1 : Nat
+      
+               ▽ 
+            ——————–  
+            t1: Nat
+    3)  ———————————————–——
+          pred t1 : Nat
+
+               ▽ 
+            ——————–  
+            t1: Nat
+    4)  ———————————————–——
+          iszero t1 : Bool
+
+
+Consider case 4)
+
+                 ▽ 
+              ——————–  
+              t1: Nat
+        ———————————————–——–—— and ∃ t' such that iszero t -> t'. So there are 3 cases that satify the property.
+          iszero t1 : Bool
+
+
+    Case 4-1) E-IsZeroZero: ———————————————–——–——
+                              iszero 0 -> true 
+
+    Case 4-2) E-IsZeroSucc: 
+                            ———————————————–——–—————— 
+                            iszero (succ nv) -> true 
+
+    Case 4-3) E-IsZero:          t1 -> t1'
+                          ———————————————–——–—————— 
+                            iszero t1 -> iszero t1' 
+
+                            
+
+      
