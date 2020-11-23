@@ -1,0 +1,220 @@
+
+TAPL Self Exercises (Ch.8 Typed Arithmetic Expressions)
+
+
+===================================================================================
+Name: Vo Minh Cong
+Student ID: 207818
+===================================================================================
+
+
+Study the following topics in the textbook.
+
+ - Syntax of types
+ 
+ - Typing rules
+
+ - Type safety
+
+===================================================================================
+
+Exercises
+
+(Syntax of Types)
+
+ This chpater introduces types as
+
+   Types T ::= Nat | Bool.
+
+ - Describe *informally* what Nat and Bool mean respectively?
+
+ [SOLUTION]
+
+Nat stands for the type of numeric values (nature numbers).
+
+Bool stands for the type of boolean values.
+
+
+ - Why does the arithmetic PL have only two types?
+
+ [SOLUTION]
+
+As we can see from the evaluation of terms, given 7 rules, there are only 2 types of values that can be evaluated.
+The first is the boolean value and the second is the numeric value. 
+
+
+(Typing relations)
+
+ The typing relation for the arithmetic PL is written as t : T where
+ t is a term, T is a type, and ':' is a relation name. 
+
+ Remember that a binary relation R is a 2-place relation on A and B and
+ it is a subset of A × B = { (a,b) | a ∈ A and b ∈ B }.
+
+ - Enumerate several elements in the binary relation ':'. 
+
+ [SOLUTION]
+
+aRb = {(a: T, b: T) |  a ∈ A and b ∈ B } ?
+
+
+ - Enumerate several elements not in the binary relation ':'. 
+
+ [SOLUTION]
+
+
+
+(Typing rules)
+
+ The type inference rules, or shortly typing rules, for the arithmetic PL
+ are in Figure 8.2 of the text book or in the slides.
+
+ true : Bool (T-True)  means  (true,Bool) ∈ ':'.
+
+ - Then what does the following inference rule
+
+     t1 : Nat
+ ———————————————–  (T-IsZero)
+  iszero t1 : Nat
+ 
+ means?
+
+
+ [SOLUTION]
+
+if (t1, Nat) ∈ ':' then (iszero t1, Nat) ∈ ':'
+
+
+ - Using the type inference rules, do infer the types of the following terms.
+
+ (1) if true then false else true : ???
+
+ (2) pred (succ (pred (succ 0))) : ???
+
+ (3) if iszero 0 then 0 else pred 0 : ???
+
+
+ - For each of (1), (2), and (3), write a type derivation tree to justify
+   the types in your answer above.
+
+ [SOLUTION]
+
+ (1)
+
+    ———————————— (T-True)  ———————————— (T-False)     ———————————— (T-True)
+     true: Bool             false: Bool                   true: Bool
+ ———————————————–———————————————–——————————————————–———————————————–———  (T-IF)
+                  if true then false else true : Bool
+
+
+
+
+ (2)
+                        ————————— (T-Zero)
+                          0: Nat
+                      ————————————— (T-Succ)
+                         succ 0: Nat
+                    ————————————————————— (T-Pred)
+                      pred (succ 0) : Nat
+                ———————————————————————————————— (T-Succ) 
+                    succ (pred (succ 0)) : Nat
+ ———————————————–———————————————–——————————————————–——————————  (T-Pred)
+                pred (succ (pred (succ 0))) : Nat
+
+
+ (3)
+      ————————— (T-Zero)                                 ———————— (T-Zero)
+        0: Nat                                            0 : Nat
+    ———————————— (T-IsZero)  ———————————— (T-Zero)     ———————————— (T-Pred)
+     iszero 0: Nat             0 : Nat                   pred 0: Nat
+ ———————————————–———————————————–——————————————————–———————————————–———  (T-IF)
+                  if iszero 0 then 0 else pred 0 : Nat
+
+
+
+ - For a term, pred false, argue why it does not have any type.
+
+ [SOLUTION]
+
+Firstly, we need to derive the term using typing rule
+
+    ——————————————————  (T-False) 
+      false : T
+——————————————————————————— (T-Pred)                     
+    pred (false) : T'
+
+In this case, T is `Bool` which doesn't match the expected type of T-Pred `Nat`
+
+So the term `pred (false)` does not have any type.
+
+
+(A concept for type safety property)
+
+ - Explain what is meant by the type safety property of a type
+   system, or shortly safety?
+
+ [SOLUTION]
+
+
+
+
+
+  An important technique to prove the type safety property is to prove
+  the progress and preservation lemmas.
+
+ -  What is the progress lemma?
+
+   [SOLUTION]
+
+
+
+
+ -  What is the preservation lemma?
+
+   [SOLUTION]
+
+
+
+
+ -  Why can the two lemmas guarantee the type safety property of
+    the type system?
+
+   [SOLUTION]
+
+
+
+
+
+
+(Proving type safety property)
+
+
+ - Write a progress lemma for the arithmetic PL. 
+
+   [SOLUTION]
+
+
+
+
+ - Prove it by induction on typing derivations.
+ 
+   [SOLUTION]
+
+
+
+
+
+
+
+
+ - Write a preservation lemma for the arithmetic PL. 
+
+   [SOLUTION]
+
+
+
+
+ 
+ - Prove it by induction on typing derivations. 
+
+   [SOLUTION]
