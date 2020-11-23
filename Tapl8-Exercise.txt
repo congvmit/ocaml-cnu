@@ -55,12 +55,19 @@ The first is the boolean value and the second is the numeric value.
 
  [SOLUTION]
 
+
+#TODO
+
 aRb = {(a: T, b: T) |  a ∈ A and b ∈ B } ?
 
 
  - Enumerate several elements not in the binary relation ':'. 
 
  [SOLUTION]
+
+#TODO
+
+
 
 
 
@@ -75,14 +82,13 @@ aRb = {(a: T, b: T) |  a ∈ A and b ∈ B } ?
 
      t1 : Nat
  ———————————————–  (T-IsZero)
-  iszero t1 : Nat
+  iszero t1 : Bool
  
  means?
 
-
  [SOLUTION]
 
-if (t1, Nat) ∈ ':' then (iszero t1, Nat) ∈ ':'
+if (t1, Nat) ∈ ':' then (iszero t1, Bool) ∈ ':'
 
 
  - Using the type inference rules, do infer the types of the following terms.
@@ -118,7 +124,7 @@ if (t1, Nat) ∈ ':' then (iszero t1, Nat) ∈ ':'
                       pred (succ 0) : Nat
                 ———————————————————————————————— (T-Succ) 
                     succ (pred (succ 0)) : Nat
- ———————————————–———————————————–——————————————————–——————————  (T-Pred)
+            —————————–——————————————————–——————————  (T-Pred)
                 pred (succ (pred (succ 0))) : Nat
 
 
@@ -126,7 +132,7 @@ if (t1, Nat) ∈ ':' then (iszero t1, Nat) ∈ ':'
       ————————— (T-Zero)                                 ———————— (T-Zero)
         0: Nat                                            0 : Nat
     ———————————— (T-IsZero)  ———————————— (T-Zero)     ———————————— (T-Pred)
-     iszero 0: Nat             0 : Nat                   pred 0: Nat
+     iszero 0: Bool             0 : Nat                   pred 0: Nat
  ———————————————–———————————————–——————————————————–———————————————–———  (T-IF)
                   if iszero 0 then 0 else pred 0 : Nat
 
@@ -155,8 +161,10 @@ So the term `pred (false)` does not have any type.
 
  [SOLUTION]
 
+The safety property of type system is defined as a combination of the progess and preservation
 
-
+The progress means the term is well-typed and never getting stuck. 
+And the preservation means the type of the resulting result is well defined.
 
 
   An important technique to prove the type safety property is to prove
@@ -166,44 +174,82 @@ So the term `pred (false)` does not have any type.
 
    [SOLUTION]
 
-
+The progress lemma is well-term is not stuck.
 
 
  -  What is the preservation lemma?
 
    [SOLUTION]
 
-
-
+The preservation lemma is that if a well-typed term takes a step of evaluation, 
+then the resulting term is also well typed.
 
  -  Why can the two lemmas guarantee the type safety property of
     the type system?
 
    [SOLUTION]
 
-
-
-
+A safety property means that the given term can be evaluated without errors or getting stuck. 
+To do that, the preservation ensures the resulting term is well typed which ensures the evaluation 
+step can be done without getting stuck.
 
 
 (Proving type safety property)
-
 
  - Write a progress lemma for the arithmetic PL. 
 
    [SOLUTION]
 
-
-
+Suppose t is a well-typed term (that is, t : T for some T).
+Then either t is a value or else there is some t' with t → t' .
 
  - Prove it by induction on typing derivations.
  
    [SOLUTION]
 
 
+Base case: 1)  ————————— (T-Zero)
+                0: Nat 
 
+           2)  ———————————— (T-True)
+                true: Bool
 
+           3)  ————————————— (T-False)
+                false: Bool
 
+Base-1: 
+  t = true and T = Bool. The argument holds because true is a value
+
+Base-2:
+  t = false and T = Bool. The argument holds because true is a value
+
+Base-3:
+  t = 0 and T = Nat. The argument holds because 0 is a value
+
+Inductive case:
+              ▽                 ▽             ▽
+         ————–——————       ————–——————   ————–——————
+          t1 : Bool          t2 : T         t3 : T
+    1) ———————————————–————————————————————————————–——
+            if t1 then t2 else t3 : T
+
+               ▽ 
+            ——————–  
+            t1: Nat
+    2)  ———————————————–——
+          succ t1 : Nat
+      
+               ▽ 
+            ——————–  
+            t1: Nat
+    3)  ———————————————–——
+          pred t1 : Nat
+
+               ▽ 
+            ——————–  
+            t1: Nat
+    4)  ———————————————–——
+          iszero t1 : Nat
 
 
 
@@ -212,6 +258,7 @@ So the term `pred (false)` does not have any type.
    [SOLUTION]
 
 
+If t : T and t → t', then t' : T
 
 
  
