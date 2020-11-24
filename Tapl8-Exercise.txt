@@ -56,20 +56,29 @@ The first is the boolean value and the second is the numeric value.
  [SOLUTION]
 
 
-#TODO
+Assume set A = {1, 2, 3, ..., n}, B = {1, 2, 3, ..., n}
 
-aRb = {(a: T, b: T) |  a ∈ A and b ∈ B } ?
+R is a binary relation between A and B such that the first number equals to the second plus 1
 
+R = {(1, 2), (2, 3), ..., (n-1, n)}
+
+In terms of typing relation, we have P(a, b) : Bool where P(a, b) is a true if (a, b) ∈ R and is false if (a, b) ∉ R.
+
+For instance, 
+
+P(1, 2) : true
+P(2, 3) : true
 
  - Enumerate several elements not in the binary relation ':'. 
 
  [SOLUTION]
 
-#TODO
+Several elements not in the binary relation which cause P(a, b) to be false.
 
+For instance, 
 
-
-
+P(2, 1) : false
+P(4, 2) : false
 
 (Typing rules)
 
@@ -142,14 +151,19 @@ if (t1, Nat) ∈ ':' then (iszero t1, Bool) ∈ ':'
 
  [SOLUTION]
 
+
+Consider the term `pred t`
+
 Firstly, we need to derive the term using typing rule
 
-    ——————————————————  (T-False) 
-      false : T
-——————————————————————————— (T-Pred)                     
-    pred (false) : T'
+    ————————————
+      t : Nat
+———————————————————— (T-Pred)                     
+    pred t : Nat
 
-In this case, T is `Bool` which doesn't match the expected type of T-Pred `Nat`
+By T-Pred, the term `pred t` has type if and only if the term t has type Nat.
+
+In this case, t = false has type `Bool` which doesn't match the expected type of T-Pred `Nat`
 
 So the term `pred (false)` does not have any type.
 
@@ -366,7 +380,7 @@ Consider case 4)
                  ▽ 
               ——————–  
               t1: Nat
-        ———————————————–——–—— and ∃ t' such that iszero t -> t'. So there are 3 cases that satify the property.
+        ———————————————–——–—— and ∃ t' such that iszero t -> t'. So there are 3 subcases that satify the property.
           iszero t1 : Bool
 
 
@@ -381,6 +395,6 @@ Consider case 4)
                           ———————————————–——–—————— 
                             iszero t1 -> iszero t1' 
 
-                            
+
 
       
