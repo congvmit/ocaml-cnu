@@ -358,10 +358,25 @@ Case T-IF: t = if t1 then t2 else t3  t1 : Bool  t2 : T    t3 : T
     obtaining t1' : Bool. Combining this with the facts (from the assumptions of the T-If case) that t2 : T and t3 : T, 
     we can apply rule T-If to conclude that if t1' then t2 else t3 : T, that is t' : T.
 
+
+Case T-Pred: By the evaluation rule, we have 3 cases to consider: E-Pred, E-PredZero and E-PredSucc,
+  
+  Case E-Pred: t = pred t1    T = Nat
+    By E-Pred, we can obtain that t1 -> t1', as t1 : Nat, then t1' : Nat (by the induction assumption)
+    then pred t1' : Nat. The property holds
+  
+  Case E-PredZero: t = pred 0    T = Nat
+    By E-PredZero and T-Zero,  we have t1 -> t1' where t1' = 0 so t1': Nat. The property holds
+
+  Case E-PredSucc: t = pred (succ nv)   T = Nat
+    By E-PredSucc, we have t1 -> t1' where t1' = nv so t1': Nat. The property holds.
+
+
 Case T-Zero: t = 0  T = Nat
   Can’t happen (for the same reasons as T-True above).
 
 
 Case T-Succ: t = succ t1  T = Nat   t1 : Nat
-  By E-Succ, we can derive t -> t'. The form of this rule tells us that t1 -> t1. 
-  Since we also know t1 : Nat, we can obtain t1': Nat (by the induction assumption), then succ t1': Nat.
+  By E-Succ, we can derive t -> t'. The form of this rule tells us that t1 -> t1'. 
+  Since we also know t1 : Nat, we can obtain t1': Nat (by the induction assumption), then succ t1': Nat. 
+  The property holds
