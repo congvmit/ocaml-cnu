@@ -116,9 +116,9 @@ if (t1, Nat) ∈ ':' then (iszero t1, Bool) ∈ ':'
 
  (1)
 
-    ———————————— (T-True)  ———————————— (T-False)     ———————————— (T-True)
-     true: Bool             false: Bool                   true: Bool
- ———————————————–———————————————–——————————————————–———————————————–———  (T-IF)
+    ———————————— (T-True)    —————————————— (T-False)       ———————————— (T-True)
+     true: Bool                 false: Bool                   true: Bool
+ ———————————————–———————————————–——————————————————–—————————————————————————–———  (T-IF)
                   if true then false else true : Bool
 
 
@@ -323,78 +323,45 @@ Consider case 4) t = iszero t1, t1 : Nat
  - Prove it by induction on typing derivations. 
 
    [SOLUTION]
+
                                                                                 ▽
 We can proof the lemma by induction on the structure of typing derivations   ——————–       
-                                                                              t: T
+                                                                              t : T
+                        
+We assume the desired property holds for all subderivations and proceed by 
+case analysis on the final rule in the derivation.
 
-Base case: 1)  ————————— (T-Zero)
-                0: Nat 
+Case T-True, T-False and T-Zero:
 
-           2)  ———————————— (T-True)
-                true: Bool
+  We have  ——————–  where t is the constant value (true, false, or zero) and T is the type of the value.
+            t : T
 
-           3)  ————————————— (T-False)
-                false: Bool
-
-    Base-1: 
-      t = true and T = Bool. The property holds because 0 is a value, so there is relation such that t -> t'
-
-    Base-2:
-      t = false and T = Bool. The property holds because 0 is a value, so there is relation such that t -> t'
-
-    Base-3:
-      t = 0 and T = Nat. The property holds because 0 is a value, so there is relation such that t -> t'
+  Because t is a value, so it cannot be the case that t -> t' for any t', the requirements of theorem are
+  vacuously satisfied.
 
 
-Inductive case: 
+Case T-IF: t = if t1 then t2 else t3  t1 : Bool  t2 : T    t3 : T
+  For `if` case, there 3 rules  by which t -> t' can be derived: E-IFTrue, E-IFFalse, E-IF.
+
+  Case E-IFTrue and E-IFFalse: t1 = true, t' = t2 or t1 = false, t' = t3, respectively.
+
+    if t -> t' is derived using E-IFTrue or E-IFFalse, then from the form of this rule, we see that
+    t1 must be true and the resulting term t' is the second subexpression t2
+    or t1 must be false and the resulting term t' is the second subexpression t3
+
+    Becase t2 : T and t3 : T (By Inductive Assumption) so the property holds
+                                                
+
+  Case E-IF: t1 -> t1'   t' = if t1' then t2 else t3
+    From the assumptions of the T-If case, we have a subderivation of the original typing derivation 
+    whose conclusion is t1 : Bool. We can apply the induction hypothesis to this subderivation,  
+    obtaining t1' : Bool. Combining this with the facts (from the assumptions of the T-If case) that t2 : T and t3 : T, 
+    we can apply rule T-If to conclude that if t1' then t2 else t3 : T, that is t' : T.
+
+Case T-Zero: t = 0  T = Nat
+  Can’t happen (for the same reasons as T-True above).
 
 
-We have 4 cases to examine:
-              ▽                 ▽             ▽
-         ————–——————       ————–——————   ————–——————
-          t1 : Bool          t2 : T         t3 : T
-    1) ———————————————–————————————————————————————–——
-            if t1 then t2 else t3 : T
-
-               ▽ 
-            ——————–  
-            t1: Nat
-    2)  ———————————————–——
-          succ t1 : Nat
-      
-               ▽ 
-            ——————–  
-            t1: Nat
-    3)  ———————————————–——
-          pred t1 : Nat
-
-               ▽ 
-            ——————–  
-            t1: Nat
-    4)  ———————————————–——
-          iszero t1 : Bool
-
-
-Consider case 4)
-
-                 ▽ 
-              ——————–  
-              t1: Nat
-        ———————————————–——–—— and ∃ t' such that iszero t -> t'. So there are 3 subcases that satify the property.
-          iszero t1 : Bool
-
-
-    Case 4-1) E-IsZeroZero: ———————————————–——–——
-                              iszero 0 -> true 
-
-    Case 4-2) E-IsZeroSucc: 
-                            ———————————————–——–—————— 
-                            iszero (succ nv) -> true 
-
-    Case 4-3) E-IsZero:          t1 -> t1'
-                          ———————————————–——–—————— 
-                            iszero t1 -> iszero t1' 
-
-
-
-      
+Case T-Succ: t = succ t1  T = Nat   t1 : Nat
+  By E-Succ, we can derive t -> t'. The form of this rule tells us that t1 -> t1. 
+  Since we also know t1 : Nat, we can obtain t1': Nat (by the induction assumption), then succ t1': Nat.
