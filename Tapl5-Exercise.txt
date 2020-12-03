@@ -86,7 +86,7 @@ Variables is letter standing for arbitrary terms in the syntax. t ::= x
    ?
  [SOLUTION]
    
-   #TODO
+  left associative
 
 
  - Explain briefly the difference between meta variables
@@ -383,6 +383,26 @@ The set of free variables of a term t is written as FV(t) which is defined as fo
     not = λb. b fls tru 
   
   To check the correctness, I re-evaluate the functions with 2 cases:
+  
+  (1) not fls 
+    =  (λb. b fls tru) fls            By definition
+    → ([b ↦ fls] (b fls tru)
+    = fls fls tru
+    = (λt. λf. f) fls tru             By definition
+    → ([t ↦ fls] (λf.f) tru
+    = (λf.f) tru
+    → ([f ↦ tru] (f)
+    = tru
+
+  (2) not tru
+    =  (λb. b fls tru) tru            By definition
+    → ([b ↦ tru] (b fls tru)
+    = tru fls tru
+    = (λt. λf. t) fls tru             By definition
+    → ([t ↦ fls] (λf.t) tru
+    = (λf. fls) tru
+    → ([f ↦ tru] (fls)
+    = fls
 
 
  - Define the functions pair (to create a pair), fst (to select the
@@ -519,9 +539,3 @@ The set of free variables of a term t is written as FV(t) which is defined as fo
   ⟶2 λs. λz. c₁ s (c₁ s z)
   ⟶2 λs. λz. s (s z)
   = c2
-
-
-
-
-
-
