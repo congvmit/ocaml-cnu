@@ -276,6 +276,8 @@ The set of free variables of a term t is written as FV(t) which is defined as fo
     ⟶ [b ↦ fls] (λc. b c fls) tru
     = (λc. fls c fls) tru
     ⟶ [c ↦ tru] (fls c fls)
+
+
     = (fls tru fls)
     = (λt. λf. f) tru fls
     ⟶ [t ↦ tru] (λf. f) fls
@@ -304,42 +306,47 @@ The set of free variables of a term t is written as FV(t) which is defined as fo
 
  [SOLUTION]
   
+    Given OR gate, I can build the logical values in the table below
+
     term            | value
     ------------------------
-    tru tru         | tru
-    tru fls         | tru
-    fls tru         | tru
-    fls fls         | fls
+    tru tru         | tru     
+    tru fls         | tru     
+    fls tru         | tru     
+    fls fls         | fls     
 
-    as can be seen from those rules above, I can guess the `or` function can be defined as:
-    or = λb. λc. b c tru
+
+    as can be seen from those rules above, I can educated guess the `or` function can be defined as:
+    or = λb. λc. b tru c
     
-    
+    By induction, I can proof the above function is true.
+
     ---
+    Given NOT gate, I can build the logical values in the table below
+
     term            | value
     ------------------------
     tru             | fls
     fls             | tru
 
-    Similarly, as can be seen from those rules above, I can guess the `not` function can be defined as:
+    Similarly, as can be seen from those rules above, I can educated guess the `not` function can be defined as:
 
     not = λb. b fls tru 
 
 
-    
+
  - Define the functions pair (to create a pair), fst (to select the
    first element of a pair), and snd (to select the second element of
    a pair)
 
+
  [SOLUTION]
  
-    pair =
+    pair = λf. λs. λb. b f s
 
+    fst = λp. p tru
 
-    fst =
-
-
-    snd =
+    snd = λp. p fls
 
 
 
@@ -348,10 +355,40 @@ The set of free variables of a term t is written as FV(t) which is defined as fo
 
  [SOLUTION]
  
-   fst ( pair v w ) ->
+    fst ( pair v w )
+  = (λp. p tru) (pair v w)
+  ⟶ [p ↦ (pair v w)] (p tru)
+  = (pair v w) tru
+  = (λf. λs. λb. b f s) v w tru 
+  ⟶ [f ↦ v] (λs. λb. b f s) w tru
+  = (λs. λb. b v s) w tru
+  ⟶ [s ↦ w] (λb. b v s) tru
+  = (λb. b v w) tru
+  ⟶ [b ↦ tru] (v w)
+  = tru v w
+  = (λt. λf. t) v w
+  ⟶ [t ↦ v] (λf. t)
+  = (λf. v) w
+  ⟶ [f ↦ w] (v)
+  = v
 
 
-   snd ( pair v w ) ->
+   snd ( pair v w )
+  = (λp. p fls) (pair v w)
+  ⟶ [p ↦ (pair v w)] (p fls)
+  = (pair v w) fls
+  = (λf. λs. λb. b f s) v w fls 
+  ⟶ [f ↦ v] (λs. λb. b f s) w fls
+  = (λs. λb. b v s) w fls
+  ⟶ [s ↦ w] (λb. b v s) fls
+  = (λb. b v w) fls
+  ⟶ [b ↦ fls] (v w)
+  = fls v w
+  = (λt. λf. f) v w
+  ⟶ [t ↦ v] (λf. f)
+  = (λf. f) w
+  ⟶ [f ↦ w] (f)
+  = w
 
 
    for some terms v and w. 
