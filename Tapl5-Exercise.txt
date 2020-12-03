@@ -248,7 +248,7 @@ The set of free variables of a term t is written as FV(t) which is defined as fo
     ⟶ [b ↦ tru] (λ c. b c fls) tru
     = (λc. tru c fls) tru
     ⟶ [c ↦ tru] (tru c fls)
-    = (tru tru fls)
+    = tru tru fls
     = (λt. λf. t) tru fls
     ⟶ [t ↦ tru] (λf. t) fls
     = (λf. tru) fls
@@ -262,7 +262,7 @@ The set of free variables of a term t is written as FV(t) which is defined as fo
     ⟶ [b ↦ tru] (λc. b c fls) fls
     = (λc. tru c fls) fls
     ⟶ [c ↦ fls] (tru c fls)
-    = (tru fls fls)
+    = tru fls fls
     = (λt. λf. t) fls fls
     ⟶ [t ↦ fls] (λf. t) fls
     = (λf. fls) fls
@@ -315,11 +315,60 @@ The set of free variables of a term t is written as FV(t) which is defined as fo
     fls tru         | tru     
     fls fls         | fls     
 
-
     as can be seen from those rules above, I can educated guess the `or` function can be defined as:
     or = λb. λc. b tru c
-    
-    By induction, I can proof the above function is true.
+
+
+  To check the correctness, I re-evaluate the functions with 4 cases:
+
+  (1) or tru tru
+  =  (λb. λc. b tru c) tru tru     By definition
+  → ([b ↦ tru] (λc. b tru c) tru
+  = (λc. tru tru c) tru
+  → ([c ↦ tru] (tru tru c)
+  = tru tru tru
+  = (λt. λf. t) tru tru             By definition
+  → ([t ↦ tru] (λf. t) tru
+  = (λf. tru) tru
+  → ([f ↦ tru] (tru)
+  = tru
+
+
+  (2) or tru fls
+  =  (λb. λc. b tru c) tru fls      By definition
+  → ([b ↦ tru] (λc. b tru c) fls
+  = (λc. tru tru c) fls
+  → ([c ↦ fls] (tru tru c)
+  = tru tru fls
+  = (λt. λf. t) tru fls             By definition
+  → ([t ↦ tru] (λf. t) fls
+  = (λf. tru) fls
+  → ([f ↦ fls] (tru)
+  = tru
+
+  (3) or fls tru
+  =  (λb. λc. b tru c) fls tru      By definition
+  → ([b ↦ fls] (λc. b tru c) tru
+  = (λc. fls tru c) tru
+  → ([c ↦ tru] (fls tru c)
+  = fls tru tru
+  = (λt. λf. f) tru tru             By definition
+  → ([t ↦ tru] (λf.f) tru
+  = (λf.f) tru
+  → ([f ↦ tru] (f)
+  = tru
+
+  (4) or fls fls
+  =  (λb. λc. b tru c) fls fls      By definition
+  → ([b ↦ fls] (λc. b tru c) fls
+  = (λc. fls tru c) fls
+  → ([c ↦ fls] (fls tru fls)
+  = fls tru fls
+  = (λt. λf. f) tru fls             By definition
+  → ([t ↦ tru] (λf.f) fls
+  = (λf.f) fls
+  → ([f ↦ fls] (f)
+  = fls
 
     ---
     Given NOT gate, I can build the logical values in the table below
@@ -332,7 +381,8 @@ The set of free variables of a term t is written as FV(t) which is defined as fo
     Similarly, as can be seen from those rules above, I can educated guess the `not` function can be defined as:
 
     not = λb. b fls tru 
-
+  
+  To check the correctness, I re-evaluate the functions with 2 cases:
 
 
  - Define the functions pair (to create a pair), fst (to select the
@@ -414,8 +464,16 @@ The set of free variables of a term t is written as FV(t) which is defined as fo
    
  [SOLUTION]
 
-    addone c¹ →
-
+    addone c¹ 
+    
+  = λn. λs. λz. s (n s z) c¹
+  ⟶ [n ↦ c¹] (λs. λz. s (n s z))
+  = λs. λz. s ((λs. λz. s z) s z)
+  ⟶ λs. λz. s [s ↦ s]((λz. s z) z)
+  = λs. λz. s ((λz. s z) z)
+  ⟶ λs. λz. s [z ↦ z](s z)
+  = λs. λz. s (s z)
+  = c₂
 
  - Under the definition of the church numerals above,
    plus and times are defined as follows.
@@ -430,10 +488,40 @@ The set of free variables of a term t is written as FV(t) which is defined as fo
 
  [SOLUTION]
 
-   plus c₂ c₁ →
+   plus c₂ c₁ 
+  = (λm. λn. λs. λz. m s (n s z)) c₂ c₁
+  ⟶ [m ↦ c₂] (λn. λs. λz. m s (n s z)) c₁
+  = (λn. λs. λz. c₂ s (n s z)) c₁
+  ⟶ [n ↦ c₁] (λs. λz. c₂ s (n s z))
+  = λs. λz. c₂ s (c₁ s z)
+  =  λs. λz. c₂ s ((λs.λz.s z) s z)
+  ⟶3 λs. λz. c₂ s (s z)
+  = λs. λz. (λs. λz. s (s z)) s (s z)
+  ⟶3 λs. λz. (λs. λz. s (s z)) s (s z)
+  = λs. λz. (λs. λz. s (s z)) s (s z)
+  ⟶2 λs. λz. s (s (s z))
+  = c3
+
+  times c₂ c₁
+  = (λm. λn. m (plus n) c0) c₂ c₁
+  ⟶ [m ↦ c₂] (λn. m (plus n) c0) c₁
+  = (λn. c₂ (plus n) c0) c₁
+  ⟶ [n ↦ c₁] c₂ (plus n) c0
+  = c₂ (plus c₁) c0
+  = (λs. λz. s (s z)) (plus c₁) c0
+  ⟶ [s ↦ (plus c₁)] (λz. s (s z)) c0
+  = (λz. (plus c₁) ((plus c₁) z)) c0
+  ⟶ [z ↦ c0] ((plus c₁) ((plus c₁) z))
+  = (plus c₁) (plus c₁ c0)
+  = (plus c₁) (λm. λn. λs. λz. m s (n s z) c₁ c0)
+  ⟶2 (plus c₁) c1
+  = (λm. λn. λs. λz. m s (n s z)) c₁ c₁ 
+  ⟶2 λs. λz. c₁ s (c₁ s z)
+  ⟶2 λs. λz. s (s z)
+  = c2
 
 
-   times c₂ c₁ →
+
 
 
 
