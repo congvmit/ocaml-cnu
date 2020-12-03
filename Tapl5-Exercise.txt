@@ -234,7 +234,7 @@ The set of free variables of a term t is written as FV(t) which is defined as fo
 
  - The logical conjunction (and) is defined as
 
-        and = λb. λ c. b c fls
+        and = λb. λc. b c fls
 
    Verify the defintion of and if it does the logical conjunction by showing:
 
@@ -243,24 +243,87 @@ The set of free variables of a term t is written as FV(t) which is defined as fo
  
      (1) and tru tru -> [ fill in the reduction process here ] -> tru
 
+      and tru tru
+    = (λb. λc. b c fls) tru tru
+    ⟶ [b ↦ tru] (λ c. b c fls) tru
+    = (λc. tru c fls) tru
+    ⟶ [c ↦ tru] (tru c fls)
+    = (tru tru fls)
+    = (λt. λf. t) tru fls
+    ⟶ [t ↦ tru] (λf. t) fls
+    = (λf. tru) fls
+    ⟶ [f ↦ fls] (tru) 
+    = tru
 
      (2) and tru fls -> [ fill in the reduction process here ] -> fls
 
+      and tru fls
+    = (λb. λc. b c fls) tru fls
+    ⟶ [b ↦ tru] (λc. b c fls) fls
+    = (λc. tru c fls) fls
+    ⟶ [c ↦ fls] (tru c fls)
+    = (tru fls fls)
+    = (λt. λf. t) fls fls
+    ⟶ [t ↦ fls] (λf. t) fls
+    = (λf. fls) fls
+    ⟶ [f ↦ fls] (fls) 
+    = fls
 
      (3) and fls tru -> [ fill in the reduction process here ] -> fls
 
+      and fls tru
+    = (λb. λc. b c fls) fls tru
+    ⟶ [b ↦ fls] (λc. b c fls) tru
+    = (λc. fls c fls) tru
+    ⟶ [c ↦ tru] (fls c fls)
+    = (fls tru fls)
+    = (λt. λf. f) tru fls
+    ⟶ [t ↦ tru] (λf. f) fls
+    = (λf. f) fls
+    ⟶ [f ↦ fls] f
+    = fls
+
 
      (4) and fls fls -> [ fill in the reduction process here ] -> fls
+
+      and fls fls
+    = (λb. λc. b c fls) fls fls
+    ⟶ [b ↦ fls] (λc. b c fls) fls
+    = (λc. fls c fls) tru
+    ⟶ [c ↦ fls] (fls c fls)
+    = (fls fls fls)
+    = (λt. λf. f) fls fls
+    ⟶ [t ↦ fls] (λf. f) fls
+    = (λf. f) fls
+    ⟶ [f ↦ fls] f
+    = fls
 
 
  - Define the logical or and the logical not functions. How do you
    know that they works well?
 
  [SOLUTION]
- 
-    or =
+  
+    term            | value
+    ------------------------
+    tru tru         | tru
+    tru fls         | tru
+    fls tru         | tru
+    fls fls         | fls
 
-    not =
+    as can be seen from those rules above, I can guess the `or` function can be defined as:
+    or = λb. λc. b c tru
+    
+    
+    ---
+    term            | value
+    ------------------------
+    tru             | fls
+    fls             | tru
+
+    Similarly, as can be seen from those rules above, I can guess the `not` function can be defined as:
+
+    not = λb. b fls tru 
 
 
     
