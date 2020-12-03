@@ -1,0 +1,339 @@
+
+TAPL Self Exercises (Ch.5 The Untyped Lambda Calculus)
+
+
+===================================================================================
+Name: Vo Minh Cong
+Student ID: 207818
+===================================================================================
+
+
+Study the following topics in the textbook.
+
+ - Terminologies: a core calculus and derived forms
+ 
+ - Syntax of lambda calculus 
+
+ - Operational semantics (and substitutions)
+
+ - Programming in the lambda calculus
+
+===================================================================================
+
+Exercises
+
+
+5.1 Basics
+
+
+(Core calculus and dervied forms)
+
+ - Explain briefly what is a core caclulus and what are derived forms?
+
+ [SOLUTION]
+
+A core caclulus is a mechanism in which all computation is reduced to the basic operations of function definition
+and application.
+
+A derived form is also a mechanism which are used to translate the computation into the core.
+
+
+(The syntax of lambda calculus)
+
+ - Write the syntax of the lambda calculus:
+
+ [SOLUTION]
+
+The syntax of lambda calculus: t ::= x | λx.t | t t
+
+
+ - What is variable in the syntax in the syntax?
+
+[SOLUTION]
+
+Variables is letter standing for arbitrary terms in the syntax. t ::= x
+
+
+ - What is abstraction in the syntax?
+
+[SOLUTION]
+
+  An abstraction in the syntax is a internal representation of a program as labeled trees. 
+  The abstraction is represented as λx.t
+
+ - What is application in the syntax?
+ 
+ [SOLUTION]
+
+  Application in the syntax is t t
+
+
+ - If you write 1 + 2 + 3, it means (1 + 2) + 3.
+   You don't have to write the parenthesis.
+
+   The plus operation (+) is said to be left-associative
+   because the parentheses may be omitted. 
+
+   For 's t u', it is the same as '(s t) u'.
+   If you want to write s (t u), you should not
+   omit the parenthesis.
+
+   So, the lambda application (operation) is
+
+    (1) left associative
+    (2) right associative
+
+   ?
+ [SOLUTION]
+   
+   #TODO
+
+
+ - Explain briefly the difference between meta variables
+   and (object) variables in the lambda calculus.
+
+ [SOLUTION]
+
+  The metavariable t stands for an arbitrary term and a variable x stands for and arbitrary variable.
+  So x is a metavariable ranging over variables.
+
+
+(The semantics of lambda calculus)
+
+
+ - Explain briefly the difference between free variables
+   and bound variables
+
+ [SOLUTION]
+
+  Given term t ::=  λx. t
+
+  An occurrencce of the variable x is said to be bound when it occurs in the body t.
+  An occurrencce of the variable x is said to be free if it appears in a position where it is not bound
+  by an enclosing abstraction on x.
+
+
+ - Explain briefly a single step evaluation ---> on
+   lambda terms. 
+
+ [SOLUTION]
+    (λx. x) y 
+  ⟶ [x ↦ y] x
+
+  [x ↦ y] x means the term obtained by replacing all free occurences of x in x by y.
+
+ - Refer to Page 22 for the definition of FV(t), a set of
+   free variables occurring in the term t. 
+
+  Explain briefly the defition of FV(t) for variable, abstraction, and
+  application terms. .
+
+ [SOLUTION]
+
+The set of free variables of a term t is written as FV(t) which is defined as follows:
+
+  FV(x) = {x}
+  FV(λx.t1) = FV(t1) \ {x}
+  FV(t1 t2) = FV(t1) ∪ FV(t2)
+
+
+ - Refer to Page 23 for the definition of substitutions
+   [x |->s ] t.
+
+  Explain briefly what is [x |-> s]t. 
+
+ [SOLUTION]
+
+  [x ↦ s] t means the term obtained by replacing all free occurences of s by y.
+
+
+
+5.2 Programming in the lambda calculus
+
+ - Explain how a lambda calculus handles more than two arguments by
+   writing an add function under the assumption that (+) and the
+   reduction n + m are available.
+
+   [Hint: Slide P.11]
+
+ [SOLUTION]
+  
+  add = λx λy. x+y
+
+    add 1 2
+  = (add 1) 2
+  = ((λx λy. x+y) 1) 2
+  ⟶ [x ↦ 1] ((λy. x+y) 1) 2
+  = (λy. 1+y) 2
+  ⟶ [y ↦ 2] (1+y) 2
+  = 1+2
+  = 3
+
+
+ - Explain how to encode boolean values(true and false) and a test function
+   with a property as
+   
+      (1) test tru m n -> ... -> m
+      (2) test fls m n -> ... -> n
+
+   for some terms m and n. 
+
+   [Hint: Slide P.12]
+   
+ [SOLUTION]
+
+   tru = λt. λf. t
+
+
+   fls = λt. λf. f
+
+
+   test = λl. λm. λn. l m n with the property that 
+    (1) (test b v w) reduces to v when b is tru
+    (2) it reduces to w when b is false
+
+
+ - Verify the propery using your solution.
+
+ [SOLUTION]
+ 
+     (1) test tru m n -> [ fill in the reduction process here ] -> m
+        
+      test tru m n 
+    = (λl. λm. λn. l m n) tru m n
+    ⟶ [l ↦ tru] (λm. λn. l m n) m n
+    = (λm. λn. tru m n) m n
+    ⟶ [m ↦ m] (λn. l m n) n
+    = (λn. tru m n) n
+    ⟶ [n ↦ n] (tru m n)
+    = tru m n 
+    ⟶ tru m n
+    = (λt. λf. t) m n
+    ⟶ [t ↦ m] (λf. t) n
+    = (λf. m) n
+    ⟶ [f ↦ n] (m)
+    = m
+
+
+     (2) test fls m n -> [ fill in the reduction process here ] -> n
+     
+      test fls m n 
+    = (λl. λm. λn. l m n) fls m n
+    ⟶ [l ↦ fls] (λm. λn. l m n) m n
+    = (λm. λn. fls m n) m n
+    ⟶ [m ↦ m] (λn. fls m n) n
+    = (λn. fls m n) n
+    ⟶ [n ↦ n] (fls m n)
+    = fls m n
+    = (λt. λf. f) m n
+    ⟶ [t ↦ m] (λf. f) n
+    = (λf. f) n
+    ⟶ [f ↦ n] (f)
+    = n
+
+
+ - The logical conjunction (and) is defined as
+
+        and = λb. λ c. b c fls
+
+   Verify the defintion of and if it does the logical conjunction by showing:
+
+
+ [SOLUTION]
+ 
+     (1) and tru tru -> [ fill in the reduction process here ] -> tru
+
+
+     (2) and tru fls -> [ fill in the reduction process here ] -> fls
+
+
+     (3) and fls tru -> [ fill in the reduction process here ] -> fls
+
+
+     (4) and fls fls -> [ fill in the reduction process here ] -> fls
+
+
+ - Define the logical or and the logical not functions. How do you
+   know that they works well?
+
+ [SOLUTION]
+ 
+    or =
+
+    not =
+
+
+    
+ - Define the functions pair (to create a pair), fst (to select the
+   first element of a pair), and snd (to select the second element of
+   a pair)
+
+ [SOLUTION]
+ 
+    pair =
+
+
+    fst =
+
+
+    snd =
+
+
+
+ - Using the solution for pair, fst, and snd, evaluate the following
+   terms.
+
+ [SOLUTION]
+ 
+   fst ( pair v w ) ->
+
+
+   snd ( pair v w ) ->
+
+
+   for some terms v and w. 
+
+
+ - Under the definition of the church numerals as
+
+    c₀ = λs.λz.z
+    c₁ = λs.λz.s z
+    c₂ = λs.λz.s² z
+    ⋯
+    cₙ = λs.λz.sⁿ z
+    ⋯
+
+   denoting the numbers, zero, one, two, ..., n.
+
+
+   Given a function addone
+
+    addone = λn. λs. λz. s (n s z)
+
+   Evaluate the following term:
+   
+ [SOLUTION]
+
+    addone c¹ →
+
+
+ - Under the definition of the church numerals above,
+   plus and times are defined as follows.
+    
+
+    (1) plus = λm. λn. λs. λz. m s (n s z)
+
+    (2) times = λm. λn. m (plus n) c₀
+
+
+   Evaluate the following temrs.
+
+ [SOLUTION]
+
+   plus c₂ c₁ →
+
+
+   times c₂ c₁ →
+
+
+
