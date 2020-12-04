@@ -517,8 +517,6 @@ The set of free variables of a term t is written as FV(t) which is defined as fo
   =  λs. λz. c₂ s ((λs.λz.s z) s z)
   ⟶3 λs. λz. c₂ s (s z)
   = λs. λz. (λs. λz. s (s z)) s (s z)
-  ⟶3 λs. λz. (λs. λz. s (s z)) s (s z)
-  = λs. λz. (λs. λz. s (s z)) s (s z)
   ⟶2 λs. λz. s (s (s z))
   = c3
 
