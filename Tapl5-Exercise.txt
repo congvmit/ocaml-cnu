@@ -51,7 +51,7 @@ The syntax of lambda calculus: t ::= x | λx.t | t t
 
 [SOLUTION]
 
-Variables is letter standing for arbitrary terms in the syntax. t ::= x
+Variables is letter x standing for arbitrary terms in the syntax. t ::= x
 
 
  - What is abstraction in the syntax?
@@ -59,13 +59,13 @@ Variables is letter standing for arbitrary terms in the syntax. t ::= x
 [SOLUTION]
 
   An abstraction in the syntax is a internal representation of a program as labeled trees. 
-  The abstraction is represented as λx.t
+  The abstraction is represented as t ::= λx.t
 
  - What is application in the syntax?
  
  [SOLUTION]
 
-  Application in the syntax is t t
+  Application in the syntax is t ::= t t
 
 
  - If you write 1 + 2 + 3, it means (1 + 2) + 3.
